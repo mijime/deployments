@@ -1,0 +1,28 @@
+@include conf.d/*.conf
+{{range ls "/fluent/sources"}}
+<source>
+  type {{printf "/fluent/sources/%s/type" . | getv}}
+  {{range printf "/fluent/sources/%s/opt/*" . | getvs}}{{$v := split . "::"}}
+  {{index $v 0}} {{index $v 1}}{{end}}
+</source>{{end}}
+{{range ls "/fluent/matches"}}
+<match {{printf "/fluent/matches/%s/tag" . | getv}}>
+  type {{printf "/fluent/matches/%s/type" . | getv}}
+{{range printf "/fluent/matches/%s/opt/*" . | getvs}}{{$v := split . "::"}}
+  {{index $v 0}} {{index $v 1}}{{end}}
+{{if printf "/fluent/matches/%s/tmpl" . | ls}}
+  <template>
+{{range printf "/fluent/matches/%s/tmpl/*" . | getvs}}{{$v := split . "::"}}
+    {{index $v 0}} {{index $v 1}}{{end}}
+  </template>{{end}}
+{{if printf "/fluent/matches/%s/servers" . | ls}}
+  <server>
+{{range printf "/fluent/matches/%s/servers/*" . | getvs}}{{$v := split . "::"}}
+    {{index $v 0}} {{index $v 1}}{{end}}
+  </server>{{end}}
+{{if printf "/fluent/matches/%s/stores" . | ls}}
+  <store>
+{{range printf "/fluent/matches/%s/stores/*" . | getvs}}{{$v := split . "::"}}
+    {{index $v 0}} {{index $v 1}}{{end}}
+  </store>{{end}}
+</match>{{end}}

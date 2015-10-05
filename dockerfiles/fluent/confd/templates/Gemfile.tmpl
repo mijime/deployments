@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+
+gem "fluentd"
+{{if ls "/fluent/plugins"}}{{range getvs "/fluent/plugins/*"}}
+gem "fluent-plugin-{{.}}"{{end}}{{end}}

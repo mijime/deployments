@@ -1,0 +1,4 @@
+[template]
+src   = "Gemfile.tmpl"
+dest  = "/workspace/Gemfile"
+keys  = [ "/" ]
