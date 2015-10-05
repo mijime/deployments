@@ -1,0 +1,20 @@
+---
+openldap:
+  image: dinkel/openldap
+  environment:
+    SLAPD_DOMAIN: example.com
+    SLAPD_PASSWORD: ch4ngeIt
+  ports:
+  - 389:389
+
+phpldapadmin:
+  build: phpldapadmin
+  links:
+  - openldap:ldap
+  environment:
+    VIRTUAL_HOST: phpldapadmin.example.com
+    LDAP_HOST: ldap
+    LDAP_PORT: 389
+    BASE_DN: dc=example,dc=com
+    BIND_DN: cn=admin,dc=example,dc=com
+    BIND_PW: ch4angeIt
