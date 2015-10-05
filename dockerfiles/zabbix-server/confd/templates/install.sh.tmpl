@@ -1,0 +1,29 @@
+#!/bin/bash -e
+
+mysql_account(){
+  echo \
+      --host={{getv "/zabbix/db/host"}} \
+      --port={{getv "/zabbix/db/port"}} \
+      --user={{getv "/zabbix/db/user"}} \
+      --password={{getv "/zabbix/db/password"}}
+}
+
+install_db() {
+  for sql in schema.sql images.sql data.sql
+  do
+    cat /usr/share/zabbix-server-mysql/${sql} | mysql \
+      $(mysql_account) \
+      {{getv "/zabbix/db/name"}}
+  done
+}
+
+seq 0 9 | while read line
+do
+  mysqladmin ping $(mysql_account) && break
+  sleep 5
+done
+
+mysqladmin create {{getv "/zabbix/db/name"}} \
+  $(mysql_account) && {
+  install_db
+} || echo

@@ -1,0 +1,7 @@
+[template]
+src   = "zabbix.conf.php.tmpl"
+dest  = "/etc/zabbix/web/zabbix.conf.php"
+owner = "www-data"
+group = "www-data"
+mode  = "0644"
+keys  = [ "/" ]

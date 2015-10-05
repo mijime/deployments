@@ -1,0 +1,6 @@
+[template]
+src   = "zabbix_server.conf.tmpl"
+dest  = "/etc/zabbix/zabbix_server.conf"
+owner = "zabbix"
+mode  = "0640"
+keys  = [ "/" ]

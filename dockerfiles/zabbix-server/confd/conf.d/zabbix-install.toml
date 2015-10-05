@@ -1,0 +1,6 @@
+[template]
+src   = "install.sh.tmpl"
+dest  = "/install.sh"
+owner = "zabbix"
+mode  = "0700"
+keys  = [ "/" ]
