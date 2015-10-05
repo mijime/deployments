@@ -1,0 +1,21 @@
+[Unit]
+Requires=etcd2.service early-docker.service
+After=etcd2.service early-docker.service
+
+[Service]
+Restart=always
+RestartSec=30
+TimeoutStartSec=300
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker pull skynetservices/skydns:latest
+ExecStartPre=-/usr/bin/docker kill %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStart=/usr/bin/docker run --rm \
+  --name %n \
+  --publish 53:53 --publish 53:53/udp \
+  --env ETCD_MACHINES=http://${COREOS_PRIVATE_IPV4}:2379 \
+  skynetservices/skydns:latest \
+  --addr=0.0.0.0:53 \
+  --domain=docker.internal.
+ExecStop=/usr/bin/docker stop %n
+ExecReload=/usr/bin/docker restart %n

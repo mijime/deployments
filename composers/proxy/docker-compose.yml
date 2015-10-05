@@ -1,0 +1,7 @@
+---
+proxy:
+  build: nginx-proxy
+  ports:
+  - 80:80
+  volumes:
+  - /var/run/docker.sock:/var/run/docker.sock

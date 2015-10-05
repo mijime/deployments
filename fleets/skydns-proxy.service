@@ -1,0 +1,22 @@
+[Unit]
+Requires=etcd2.service docker.service
+After=etcd2.service docker.service
+
+[Service]
+Restart=always
+RestartSec=30
+TimeoutStartSec=300
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker pull mijime/skydns-proxy
+ExecStartPre=-/usr/bin/docker kill %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStart=/usr/bin/docker run --rm \
+  --name %n \
+  --publish 80:80 \
+  --dns ${COREOS_PRIVATE_IPV4} --dns-search docker.internal. \
+  mijime/skydns-proxy \
+  --backend etcd \
+  --node ${COREOS_PRIVATE_IPV4}:2379 \
+  --prefix /skydns/internal/docker
+ExecStop=/usr/bin/docker stop %n
+ExecReload=/usr/bin/docker restart %n

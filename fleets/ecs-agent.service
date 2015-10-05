@@ -1,0 +1,21 @@
+[Unit]
+Description=Amazon ECS Agent
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=always
+RestartSec=30
+TimeoutStartSec=300
+Environment=ECS_CLUSTER=default
+Environment=ECS_LOGLEVEL=warn
+ExecStartPre=-/usr/bin/docker kill %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/usr/bin/docker pull amazon/amazon-ecs-agent:latest
+ExecStart=/usr/bin/docker run --name %n \
+  --publish 127.0.0.1:51678:51678 \
+  --env=ECS_CLUSTER=${ECS_CLUSTER} \
+  --env=ECS_LOGLEVEL=${ECS_LOGLEVEL} \
+  --volume=/var/run/docker.sock:/var/run/docker.sock \
+  amazon/amazon-ecs-agent:latest
+ExecStop=/usr/bin/docker stop %n
